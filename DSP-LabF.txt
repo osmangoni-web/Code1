@@ -1,0 +1,333 @@
+
+1#Generation of Six Elimentary signals
+#code:
+
+clc;
+clear all;
+close all;
+n=-10:10;
+for i=1:length(n)
+     if n(i)>0;
+        U1(i)=1;
+        Ur(i)=n(i);
+        u(i)=0;
+        sgn(i)=1;
+ 
+     else if n(i)<0;
+             U1(i)=0;
+             Ur(i)=0;
+             u(i)=0;
+             sgn(i)=-1;
+         else
+             U1(i)=1;
+             Ur(i)=n(i);
+             u(i)=1;
+             sgn(i)=0;
+         end
+     end
+     if (n(i)>=-2 && n(i)<=2)
+         pulse(i)=1;
+     else
+         pulse(i)=0;
+     end
+end
+ subplot(3,2,1);
+stem(n,U1,'fill');
+xlabel('sample n');
+ylabel('Amplitude');
+title('unit step signal');
+subplot(3,2,2);
+stem(n,Ur,'fill');
+xlabel('sample n');
+ylabel('Amplitude');
+title('Ramp signal');
+subplot(3,2,3);
+stem(n,u,'fill');
+xlabel('sample n');
+ylabel('Amplitude');
+title('unit impulse signal');
+subplot(3,2,4);
+stem(n,sgn,'fill');
+xlabel('sample n');
+ylabel('Amplitude');
+title('signum signal');
+subplot(3,2,5);
+stem(n,pulse,'fill');
+xlabel('sample n');
+ylabel('Amplitude');
+title('unit pulse signal');
+subplot(3,2,6);
+stem(sinc(linspace(n(1),n(end))),'fill');
+xlabel('sample n');
+ylabel('Amplitude');
+title('sinc signal');
+
+2#Shifting Operation
+#code:
+
+clc;
+clear all;
+close all;
+n1=input('Enter the amount to be delayed=');
+n2=input('Enter the amount to be advanced=');
+n=-2:2;
+x=input('ENTER THE SEQUENCE=');
+subplot(3,1,1);
+stem(n,x);
+title('Signal x(n)');
+m=n+n1;
+y=x;
+subplot(3,1,2);
+stem(m,y);
+title('Delayed signal x(n-n1)');
+t=n-n2;
+z=x;
+subplot(3,1,3);
+stem(t,z);
+title('Advanced signal x(n+n2)');
+
+%N1=3
+%N2=4
+%x=[1 2 3 4 5]
+
+3#Folding Operation
+#Code:
+
+clc;
+clear all;
+close all;
+n=-1:2;
+x=input('ENTER THE SEQUENCE=');
+subplot(2,1,1)
+stem(n,x);
+axis([-3 3 -5 5]);
+title('Signal x(n)');
+y=fliplr(x);
+m=fliplr(-n);
+disp('FOLDED SEQUENCE')
+disp(y)
+subplot(2,1,2);
+stem(m,y);
+axis([-3 3 -5 5]);
+title('Reversed Signal x(-n)') ;
+
+%x=[ -1 2 1 4]
+
+4#Cross corelation
+#code:
+
+clc;
+clear all;
+close all;
+x=input('enter the 1st sequence');
+h=input('enter the 2nd sequence');
+
+subplot(3,1,1);
+stem(x);
+ylabel('Amplitude --.');
+xlabel('(a) n --.');
+title('first input sequence');
+
+subplot(3,1,2);
+stem(h);
+ylabel('Amplitude --.');
+xlabel('(b) n --.');
+title('second input sequence');
+
+y=xcorr(x,h);
+subplot(3,1,3);
+stem(y);
+ylabel('Amplitude --.');
+xlabel('(c) n --.');
+title('Cross correlated sequence');
+%x=[-1 3 2 -2]
+%h=[-2 2 3 -1]
+
+5#Auto corelation
+#code:
+
+clc;
+close all;
+clear all;
+x=input('enter the sequence');
+
+subplot(2,1,1);
+stem(x);
+ylabel('Amplitude --.');
+xlabel('(a) n --.');
+title('original signal');
+
+y=xcorr(x);
+subplot(2,1,2);
+stem(y);
+ylabel('Amplitude --.');
+xlabel('(a) n --.');
+title ('Auto correlated sequence');
+%x=[-3 2 1 -1]
+
+6#Linear covolution
+#Code:
+
+clc;
+clear all;
+close all;
+x=input('enter the 1st sequence=');
+h=input('enter the 2nd sequence=');
+y=conv(x,h);
+subplot(3,1,1);
+stem(x);
+ylabel('Amplitude');
+xlabel('(a) n');
+title('first sequence');
+subplot(3,1,2);
+stem(h);
+ylabel('Amplitude');
+xlabel('(b) n');
+title('Second sequence');
+subplot(3,1,3);
+stem(y);
+ylabel('Amplitude');
+xlabel('(c) n');
+title('Convoluted sequence');
+disp('The resultant signal is');
+disp(y);
+%x=[-2 1 4]
+%h=[1 5]
+
+7#Circular Covolution
+#Code:
+
+clc;
+clear all;
+x= input('enter the sequence=');
+h= input('enter the sequence=');
+n1=length(x);
+n2=length(h);
+N=max(n1,n2);
+x=[x zeros(1,(N-n1))];
+h=[h zeros(1,(N-n1))];
+y=zeros(1,N)
+for n=1:N
+    for m=1:N
+        j=mod(n-m,N)
+        j=j+1
+        y(n)=y(n)+x(m)*h(j)
+    end
+end
+disp('The output sequence is y(n)');
+disp(y);
+subplot(3,1,1);
+stem(x);
+%x=[2 3 1 4]
+%h=[2 3 1 4]
+
+8#DFT & IDFT
+#Code:
+
+close all;
+clear all;
+xn=input('Enter the sequence x(n)');
+N=length(xn);
+xk=zeros(1,N);
+ixk=zeros(1,N);
+for k=0:N-1
+for n=0:N-1
+xk(k+1)=xk(k+1)+(xn(n+1)*exp((-i)*2*pi*k*n/N));
+end
+end
+t=0:N-1;
+subplot(221);
+stem(t,xn);
+ylabel ('Amplitude');
+xlabel ('Time Index');
+title('Input Sequence');
+magnitude=abs(xk);
+t=0:N-1;
+subplot(222);
+stem(t,magnitude);
+ylabel ('Amplitude');
+xlabel ('K');
+title ('Magnitude Response');
+phase=angle(xk);
+t=0:N-1;
+subplot(223);
+stem(t,phase);
+ylabel ('Phase');
+xlabel ('K');
+title('Phase Response');
+for n=0:N-1
+for k=0:N-1
+ixk(n+1)=ixk(n+1)+(xk(k+1)*exp(i*2*pi*k*n/N));
+end
+end
+ixk=ixk./N;
+t=0:N-1;
+subplot(224);
+stem(t,ixk);
+ylabel ('Amplitude');
+xlabel ('Time Index');
+title ('IDFT sequence');
+disp('Magnitude of dft signal');
+disp(magnitude);
+disp('phase of dft signal');
+disp(phase);
+disp('output of idft signal');
+disp(ixk);
+%xn=[-1 3 2 -1]
+
+9#FFT & IFFT
+#Code:
+
+clc;
+close all;
+clear all;
+x=input('Enter the sequence');
+N=length(x);
+t=0:N-1;
+a=fft(x);
+b=ifft(a);
+
+m=abs(a);
+p=angle(a);
+
+subplot(3,2,1);
+stem(t,x);
+title('Original signal');
+xlabel('Time');
+ylabel('Amplitude');
+
+subplot(3,2,2);
+stem(t,a);
+title('FFT signal');
+xlabel('Time');
+ylabel('Amplitude');
+disp('The value of FFT');
+disp(a);
+
+subplot(3,2,3);
+stem(t,m);
+title('Magnitude of FFT');
+xlabel('Time');
+ylabel('Amplitude');
+disp('Magnitude of FFT');
+disp(m);
+
+subplot(3,2,4);
+title('Angle of FFT');
+xlabel('Time');
+ylabel('Amplitude');
+stem(t,p);
+disp('Angle of FFT');
+disp(p);
+
+subplot(3,2,5);
+stem(t,b);
+title('The value of IFFT');
+xlabel('Time');
+ylabel('Amplitude');
+disp('The value of IFFT');
+disp(b);
+%x=[1 2 -1 -2 0 3]
+
+
+             
